@@ -22,6 +22,8 @@ public class GameWorld extends World
     public int lifes = 3;
     public int level = 1;
     
+    public int score = 0;
+    
     public GameWorld()
     {    
         // Create a new world with 600x400 cells with a cell size of 1x1 pixels.
@@ -31,6 +33,18 @@ public class GameWorld extends World
         
         this.generateWorld();
         this.drawOverlay();
+    }
+    
+    public void drawScore() {
+        GreenfootImage canvas = this.getBackground();
+        
+        canvas.setColor(Color.GRAY);
+        canvas.fillRect(canvas.getWidth()/2 - 50, 0, 120 , 25);
+        
+        canvas.setColor(Color.WHITE);
+        canvas.setFont(new Font("", 20));
+        
+        canvas.drawString("Score: " + this.score, canvas.getWidth()/2 - 40, 20);
     }
     
     private void drawOverlay() {
@@ -45,12 +59,15 @@ public class GameWorld extends World
         
         canvas.drawString("Lifes: " + this.lifes, 10, 20);
         canvas.drawString("Level: " + this.level, canvas.getWidth()- 75, 20);
+        drawScore();
     }
     
     private void generateWorld() {
         resetActors();
         
         this.drawLevel();
+        
+        score = 0;
         
         this.ball.setMovement(1, 1);
     }
@@ -63,7 +80,7 @@ public class GameWorld extends World
                 int x = row * 80 + 40;
                 int y = line * 25 + 40;
                 
-                if(levelData[line][row] != 0) this.addObject(new Block(levelData[line][row]), x, y);
+                if(levelData[line][row] != 0) this.addObject(new Block(this, levelData[line][row]), x, y);
             }
         }
     }

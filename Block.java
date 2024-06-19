@@ -14,13 +14,15 @@ public class Block extends Actor
      */
     
     int lifes;
+    GameWorld world;
     
-    public Block() {
-        this(1);
+    public Block(GameWorld world) {
+        this(world, 1);
     }
     
-    public Block(int lifes) {
+    public Block(GameWorld world, int lifes) {
         this.lifes = lifes;
+        this.world = world;
         this.updateImage();
     }
     
@@ -38,6 +40,8 @@ public class Block extends Actor
     public void removeLife() {
         this.lifes -= 1;
         this.updateImage();
+        this.world.score++;
+        this.world.drawScore();
         if(this.lifes < 1) this.getWorld().removeObject(this);
     }
     
