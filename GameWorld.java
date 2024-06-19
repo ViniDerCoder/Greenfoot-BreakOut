@@ -11,13 +11,32 @@ public class GameWorld extends World
 
     private static int[][][] gameLevels = {
         {
-            {1, 1, 1, 1, 2, 3, 100, 1},
+            {1, 1, 1, 2, 2, 1, 1, 1},
+            {1, 3, 1, 1, 1, 1, 3, 1}
+        },
+        {
+            {1, 2, 3, 3, 3, 3, 2, 1},
+            {1, 2, 1, 2, 2, 1, 2, 1}
+        },
+        {
+            {1, 1, 3, 1, 1, 3, 1, 1},
+            {1, 1, 1, 2, 2, 1, 1, 1},
             {1, 1, 1, 1, 1, 1, 1, 1}
+        },
+        {
+            {2, 1, 3, 3, 3, 3, 1, 2},
+            {1, 1, 1, 2, 2, 1, 1, 1},
+            {1, 2, 2, 1, 1, 2, 2, 1}
+        },
+        {
+            {2, 1, 3, 3, 3, 3, 1, 2},
+            {1, 1, 3, 2, 2, 3, 1, 1},
+            {3, 3, 1, 2, 2, 1, 3, 3}
         }
     };
     
     private Paddel paddel = new Paddel();
-    private Ball ball = new Ball(this.paddel);
+    private Ball ball = new Ball(this, this.paddel);
     
     public int lifes = 3;
     public int level = 1;
@@ -66,8 +85,6 @@ public class GameWorld extends World
         resetActors();
         
         this.drawLevel();
-        
-        score = 0;
     }
     
     private void drawLevel() {
@@ -88,7 +105,7 @@ public class GameWorld extends World
         this.removeObject(this.ball);
         
         this.paddel = new Paddel();
-        this.ball = new Ball(this.paddel);
+        this.ball = new Ball(this, this.paddel);
         
         this.ball.setMovement(4, 4);
         
@@ -101,16 +118,17 @@ public class GameWorld extends World
         this.paddel.locked = true;
     }
     
-    public void repaint() {
-        this.removeLife();
-        this.drawOverlay();
+    public void nextLevel() {
+        this.level++;
+        this.generateWorld();
     }
     
     public void removeLife() {
         this.lifes -= 1;
         if(this.lifes > 0) {
             resetActors();
-            this.ball.timeout = 2;
+            this.ball.timeout = 100;
         } else finishGame();
+        this.drawOverlay();
     }
 }

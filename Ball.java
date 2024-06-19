@@ -15,10 +15,12 @@ public class Ball extends Actor
     
     private int[] movement = {0, 0};
     private Paddel linkedPaddel;
+    private GameWorld world;
     private double speed = 0;
     
-    public Ball(Paddel linkedPaddel) {
+    public Ball(GameWorld world, Paddel linkedPaddel) {
         this.linkedPaddel = linkedPaddel;
+        this.world = world;
     }
     
     public int timeout = 100;
@@ -35,13 +37,11 @@ public class Ball extends Actor
     }
     
     public double getSpeed() {
-        //return this.movement[0] + this.movement[1];
-        return Math.sqrt(movement[0] * movement[0] + movement[1] * movement[1]);
+        return Math.sqrt((movement[0] * movement[0]) + (movement[1] * movement[1]));
     }
     
     public double getCorrespondingMovmentComponent(double comp) {
-        //return this.speed - comp;
-        return Math.sqrt(this.speed * this.speed - comp * comp);
+        return Math.sqrt((this.speed * this.speed) - (comp * comp));
     }
     
     private void move() {
@@ -59,22 +59,28 @@ public class Ball extends Actor
                 this.movement[0] = -this.movement[0];
             } else {
                 double percentage = (double)relativeBallX / (double)paddelWidth;
-                double orientedPercentage = percentage - 0.5;
+                double orientedPercentage = (percentage - 0.5) * 2;
                 
-                this.movement[0] = this.movement[0] + (int)Math.round(getCorrespondingMovmentComponent(this.movement[1]) * orientedPercentage);
-                this.movement[1] = -(int)Math.round(getCorrespondingMovmentComponent(Math.abs((double)this.movement[1] + (double)this.movement[1] * percentage)));
+                this.movement[0] = (int)Math.round(getCorrespondingMovmentComponent(this.movement[0]) * orientedPercentage);
+                this.movement[1] = -(int)Math.floor(getCorrespondingMovmentComponent(Math.abs((double)this.movement[1] * percentage)));
             }
         }
         List<Block> intersectingBlocks = this.getIntersectingObjects(Block.class);
         if(intersectingBlocks.size() > 0) {
-            this.movement[1] = -this.movement[1];
+            //Add rebouncing for block
             for(Block block : intersectingBlocks) {
+                if(this.getX() + this.getImage().getWidth() / 2 > block.getX() - block.getImage().getWidth() / 2 && this.getX() - this.getImage().getWidth() / 2 < block.getX() + block.getImage().getWidth() / 2 ) {
+                    this.movement[1] = -this.movement[1];
+                } else if(this.getY() + this.getImage().getHeight() / 2 < block.getY() + block.getImage().getHeight() / 2 || this.getY() - this.getImage().getHeight() / 2 > block.getY() - block.getImage().getHeight() / 2) {
+                    this.movement[0] = -this.movement[0];
+                }
                 block.removeLife();
             }
+            if(this.world.getObjects(Block.class).size() <= 0) this.world.nextLevel();
         }
         
-        if(newX >= this.getWorld().getWidth() - 28 / 2 || newX <= 0 + 28 / 2) this.movement[0] = -this.movement[0];
+        if(newX >= this.world.getWidth() - 28 / 2 || newX <= 0 + 28 / 2) this.movement[0] = -this.movement[0];
         if(newY <= 0 + 28 / 2) this.movement[1] = -this.movement[1];
-        else if(newY >= this.getWorld().getHeight() - 28 / 2) this.getWorld().repaint();
+        else if(newY >= this.world.getHeight() - 28 / 2) this.world.removeLife();
     }
 }
