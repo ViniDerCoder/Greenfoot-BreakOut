@@ -68,8 +68,6 @@ public class GameWorld extends World
         this.drawLevel();
         
         score = 0;
-        
-        this.ball.setMovement(1, 1);
     }
     
     private void drawLevel() {
@@ -92,7 +90,7 @@ public class GameWorld extends World
         this.paddel = new Paddel();
         this.ball = new Ball(this.paddel);
         
-        this.ball.setMovement(1, 1);
+        this.ball.setMovement(4, 4);
         
         this.addObject(paddel, this.getWidth() / 2, this.getHeight() - 50);
         this.addObject(ball, this.getWidth() / 2 - 250, this.getHeight() - 250);
@@ -112,7 +110,7 @@ public class GameWorld extends World
         this.lifes -= 1;
         if(this.lifes > 0) {
             resetActors();
-            this.ball.timeout = 100;
+            this.ball.timeout = 2;
         } else finishGame();
     }
 }

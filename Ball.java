@@ -15,6 +15,7 @@ public class Ball extends Actor
     
     private int[] movement = {0, 0};
     private Paddel linkedPaddel;
+    private double speed = 0;
     
     public Ball(Paddel linkedPaddel) {
         this.linkedPaddel = linkedPaddel;
@@ -30,6 +31,17 @@ public class Ball extends Actor
     public void setMovement(int movementX, int movementY) {
         movement[0] = movementX;
         movement[1] = movementY;
+        this.speed = getSpeed();
+    }
+    
+    public double getSpeed() {
+        //return this.movement[0] + this.movement[1];
+        return Math.sqrt(movement[0] * movement[0] + movement[1] * movement[1]);
+    }
+    
+    public double getCorrespondingMovmentComponent(double comp) {
+        //return this.speed - comp;
+        return Math.sqrt(this.speed * this.speed - comp * comp);
     }
     
     private void move() {
@@ -39,21 +51,19 @@ public class Ball extends Actor
         this.setLocation(this.getX() + movement[0], this.getY() + movement[1]);
         
         if(this.getOneIntersectingObject(Paddel.class) != null) {
-            this.movement[1] = -this.movement[1];
-            /*int paddelStart = this.linkedPaddel.getX() - this.linkedPaddel.getImage().getWidth() / 2;
+            int paddelStart = this.linkedPaddel.getX() - this.linkedPaddel.getImage().getWidth() / 2;
             int paddelWidth = this.linkedPaddel.getImage().getWidth();
             int relativeBallX = this.getX() - paddelStart;
             
-            if(relativeBallX < 0) relativeBallX = 0;
-            if(relativeBallX > paddelWidth) relativeBallX = paddelWidth;
-            
-            System.out.println(relativeBallX + "/" + paddelWidth);
-            double percentage = (double)relativeBallX / (double)paddelWidth;
-            double orientedPercentage = percentage - 0.5;
-            
-            this.movement[1] = this.movement[1] + this.movement[1] * percentage);
-            
-            System.out.println(orientedPercentage);*/
+            if((relativeBallX < 0 && this.movement[0] >= 0) || (relativeBallX > paddelWidth && this.movement[0] <= 0)) {
+                this.movement[0] = -this.movement[0];
+            } else {
+                double percentage = (double)relativeBallX / (double)paddelWidth;
+                double orientedPercentage = percentage - 0.5;
+                
+                this.movement[0] = this.movement[0] + (int)Math.round(getCorrespondingMovmentComponent(this.movement[1]) * orientedPercentage);
+                this.movement[1] = -(int)Math.round(getCorrespondingMovmentComponent(Math.abs((double)this.movement[1] + (double)this.movement[1] * percentage)));
+            }
         }
         List<Block> intersectingBlocks = this.getIntersectingObjects(Block.class);
         if(intersectingBlocks.size() > 0) {

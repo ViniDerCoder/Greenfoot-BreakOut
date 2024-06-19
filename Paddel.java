@@ -8,7 +8,7 @@ import greenfoot.*;  // (World, Actor, GreenfootImage, Greenfoot and MouseInfo)
 public class Paddel extends Actor
 {
     
-    public int paddelSpeed = 2;
+    public int paddelSpeed = 5;
     public boolean locked = false;
     /**
      * Act - do whatever the Paddel wants to do. This method is called whenever
