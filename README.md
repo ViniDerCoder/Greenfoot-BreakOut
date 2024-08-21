@@ -20,3 +20,7 @@ This is a classic arcade game implemented using Greenfoot, a Java framework for 
 2. Bounce the ball off the paddle to break the bricks.
 3. Avoid letting the ball fall off the bottom of the screen.
 4. Clear all the bricks to advance to the next level.
+
+## Images
+
+![image](https://github.com/user-attachments/assets/2514f2f4-09ff-4e08-a772-09d23b4c43dd)
